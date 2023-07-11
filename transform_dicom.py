@@ -62,7 +62,7 @@ def transform_tomosynthesis(inputdir, outdir):
             # Convert to uint
             image_2d_scaled = np.uint8(image_2d_scaled)
             png.from_array(image_2d_scaled, 'L').save(
-                os.path.join(outdir, f"image_{i}.png"))
+                os.path.join(outdir, f"im{i}.png"))
             i += 1
 
 
@@ -117,7 +117,7 @@ def transform_ct(inputdir, outdir):
             os.path.join(outdir, f"im{i}.png"))
 
 
-inputdir = './data/training'
+inputdir = '/home/jabbar/results_project_tomo/data/Scapis'
 
 dir_i = 0
 for filename in os.listdir(inputdir):
