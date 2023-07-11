@@ -35,7 +35,31 @@ import os
 import pydicom
 import numpy as np
 import png
-from skimage.transform import resize
+from PIL import Image, ImageOps
+
+
+def resize_and_crop_center(img, new_width=512, new_height=512):
+    w, h = img.size
+
+    # Only downscale if needed.
+    if w > new_width or h > new_height:
+        # Use thumbnail() function to resize the input image while maintaining the aspect ratio
+        img.thumbnail((new_width, new_height), Image.LANCZOS)
+
+    # The crop function takes in a tuple of the left, upper, right, and lower pixel
+    # coordinates, and returns a rectangular region from the used image.
+    left = (img.width - new_width)/2
+    top = (img.height - new_height)/2
+    right = (img.width + new_width)/2
+    bottom = (img.height + new_height)/2
+
+    # Ensure dimensions are integer
+    left, top, right, bottom = round(left), round(
+        top), round(right), round(bottom)
+
+    img = img.crop((left, top, right, bottom))
+
+    return img
 
 
 def transform_tomosynthesis(inputdir, outdir):
@@ -51,8 +75,6 @@ def transform_tomosynthesis(inputdir, outdir):
             ds = pydicom.read_file(os.path.join(inputdir, filename))
             # # windowed = apply_voi_lut(ds.pixel_array, ds)
 
-            shape = ds.pixel_array.shape
-
             # Convert to float to avoid overflow or underflow losses.
             image_2d = ds.pixel_array.astype(float)
 
@@ -60,12 +82,16 @@ def transform_tomosynthesis(inputdir, outdir):
             image_2d_scaled = (np.maximum(image_2d, 0) /
                                image_2d.max()) * 255.0
 
-            image_2d_scaled = resize(image_2d_scaled, (1062, 1049))
-
             # Convert to uint
             image_2d_scaled = np.uint8(image_2d_scaled)
-            png.from_array(image_2d_scaled, 'L').save(
-                os.path.join(outdir, f"im{i}.png"))
+
+            # Create PIL image
+            img = Image.fromarray(image_2d_scaled)
+
+            # Resize and crop
+            img = resize_and_crop_center(img, 512, 512)
+
+            img.save(os.path.join(outdir, f"im{i}.png"))
             i += 1
 
 
@@ -85,8 +111,8 @@ def transform_ct(inputdir, outdir):
         RefDs.Columns), len(os.listdir(inputdir)))
 
     # Load spacing values
-    ConstPixelSpacing = (float(RefDs.PixelSpacing[0]), float(
-        RefDs.PixelSpacing[1]), float(RefDs.SliceThickness))
+    # ConstPixelSpacing = (float(RefDs.PixelSpacing[0]), float(
+    #    RefDs.PixelSpacing[1]), float(RefDs.SliceThickness))
 
     # Create a 3D array to hold the pixel data
     ArrayDicom = np.zeros(ConstPixelDims, dtype=RefDs.pixel_array.dtype)
@@ -116,8 +142,14 @@ def transform_ct(inputdir, outdir):
     for i in range(rescaled_image.shape[2]):
         # Convert numpy array to list
         array_list = np.rot90(rescaled_image[:, :, i], 1).tolist()
-        png.from_array(array_list, 'L').save(
-            os.path.join(outdir, f"im{i}.png"))
+        # Convert list to a PIL image
+        img = Image.fromarray(np.uint8(array_list))
+
+        # Resize and crop
+        img = resize_and_crop_center(img, 512, 512)
+
+        # Save the image
+        img.save(os.path.join(outdir, f"im{i}.png"))
 
 
 inputdir = '/home/jabbar/results_project_tomo/data/Scapis'
