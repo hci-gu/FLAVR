@@ -58,10 +58,10 @@ class CTDataset(Dataset):
         # Data augmentation
         if self.training:
             seed = random.randint(0, 2**32)
-            images_train = [self.transforms(
-                random.seed(seed), img_) for img_ in images_train]
-            images_gt = [self.transforms(random.seed(seed), img_)
-                         for img_ in images_gt]
+            random.seed(seed)
+            images_train = [self.transforms(img_) for img_ in images_train]
+            random.seed(seed)
+            images_gt = [self.transforms(img_) for img_ in images_gt]
 
             # Random Temporal Flip
             if random.random() >= 0.5:
