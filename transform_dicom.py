@@ -35,6 +35,7 @@ import os
 import pydicom
 import numpy as np
 import png
+from skimage.transform import resize
 
 
 def transform_tomosynthesis(inputdir, outdir):
@@ -58,6 +59,8 @@ def transform_tomosynthesis(inputdir, outdir):
             # Rescaling grey scale between 0-255
             image_2d_scaled = (np.maximum(image_2d, 0) /
                                image_2d.max()) * 255.0
+
+            image_2d_scaled = resize(image_2d_scaled, (1062, 1049))
 
             # Convert to uint
             image_2d_scaled = np.uint8(image_2d_scaled)
@@ -118,6 +121,7 @@ def transform_ct(inputdir, outdir):
 
 
 inputdir = '/home/jabbar/results_project_tomo/data/Scapis'
+# inputdir = './data/training'
 
 dir_i = 0
 for filename in os.listdir(inputdir):
