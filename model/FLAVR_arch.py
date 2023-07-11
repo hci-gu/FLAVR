@@ -148,7 +148,7 @@ class UNet_3D_3D(nn.Module):
         )
 
         self.feature_fuse = Conv_2d(
-            nf[3]*n_inputs, nf[3], kernel_size=1, stride=1, batchnorm=batchnorm, in_ch=1)
+            nf[3]*n_inputs, nf[3], kernel_size=1, stride=1, batchnorm=batchnorm)
 
         self.outconv = nn.Sequential(
             nn.ReflectionPad2d(3),
