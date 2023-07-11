@@ -27,7 +27,6 @@ class CTDataset(Dataset):
                 transforms.RandomCrop(256),
                 transforms.RandomHorizontalFlip(0.5),
                 transforms.RandomVerticalFlip(0.5),
-                transforms.ColorJitter(0.05, 0.05, 0.05, 0.05),
                 transforms.ToTensor()
             ])
         else:
