@@ -37,41 +37,43 @@ class CTDataset(Dataset):
 
     def __getitem__(self, index):
         if self.training:
-            imgpath = os.path.join(
+            imgpath_train = os.path.join(
                 self.data_root, "TOMO", self.trainlist[index])
+            imgpath_gt = os.path.join(
+                self.data_root, "CT", self.trainlist[index])
         else:
-            imgpath = os.path.join(self.data_root, "CT", self.trainlist[index])
+            imgpath_train = os.path.join(
+                self.data_root, "TOMO", self.trainlist[index])
+            imgpath_gt = os.path.join(
+                self.data_root, "CT", self.trainlist[index])
 
-        imgpaths = [imgpath + f'/im{i}.png' for i in range(1, 8)]
+        imgpaths_train = [imgpath_train + f'/im{i}.png' for i in range(0, 53)]
+        # Only generate paths for existing ground truth images
+        imgpaths_gt = [imgpath_gt + f'/im{i*10}.png' for i in range(0, 52)]
 
         # Load images
-        images = [Image.open(pth) for pth in imgpaths]
+        images_train = [Image.open(pth) for pth in imgpaths_train]
+        images_gt = [Image.open(pth) for pth in imgpaths_gt]
 
-        # Select only relevant inputs
-        inputs = [int(e)-1 for e in list(self.inputs)]
-        inputs = inputs[:len(inputs)//2] + [3] + inputs[len(inputs)//2:]
-        images = [images[i] for i in inputs]
-        imgpaths = [imgpaths[i] for i in inputs]
         # Data augmentation
         if self.training:
             seed = random.randint(0, 2**32)
-            images_ = []
-            for img_ in images:
-                random.seed(seed)
-                images_.append(self.transforms(img_))
-            images = images_
+            images_train = [self.transforms(
+                random.seed(seed), img_) for img_ in images_train]
+            images_gt = [self.transforms(random.seed(seed), img_)
+                         for img_ in images_gt]
+
             # Random Temporal Flip
             if random.random() >= 0.5:
-                images = images[::-1]
-                imgpaths = imgpaths[::-1]
+                images_train = images_train[::-1]
+                images_gt = images_gt[::-1]
+
         else:
-            T = self.transforms
-            images = [T(img_) for img_ in images]
+            # Apply transforms for testing
+            images_train = [self.transforms(img_) for img_ in images_train]
+            images_gt = [self.transforms(img_) for img_ in images_gt]
 
-        gt = images[len(images)//2]
-        images = images[:len(images)//2] + images[len(images)//2+1:]
-
-        return images, [gt]
+        return images_train, images_gt
 
     def __len__(self):
         if self.training:
