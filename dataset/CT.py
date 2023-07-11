@@ -24,9 +24,8 @@ class CTDataset(Dataset):
 
         if self.training:
             self.transforms = transforms.Compose([
-                transforms.RandomCrop(256),
-                transforms.RandomHorizontalFlip(0.5),
-                transforms.RandomVerticalFlip(0.5),
+                # transforms.RandomHorizontalFlip(0.5),
+                # transforms.RandomVerticalFlip(0.5),
                 transforms.ToTensor()
             ])
         else:
@@ -49,6 +48,10 @@ class CTDataset(Dataset):
         imgpaths_train = [imgpath_train + f'/im{i}.png' for i in range(0, 53)]
         # Only generate paths for existing ground truth images
         imgpaths_gt = [imgpath_gt + f'/im{i*10}.png' for i in range(0, 52)]
+
+        print("GetItem: Index: ", index)
+        print(imgpaths_train)
+        print(imgpath_gt)
 
         # Load images
         images_train = [Image.open(pth) for pth in imgpaths_train]
