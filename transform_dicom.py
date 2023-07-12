@@ -91,6 +91,10 @@ def transform_tomosynthesis(inputdir, outdir):
             # Resize and crop
             img = resize_and_crop_center(img, 512, 512)
 
+            # Save image as 3 channel RGB
+            img = ImageOps.grayscale(img)
+            img = img.convert('RGB')
+
             img.save(os.path.join(outdir, f"im{i}.png"))
             i += 1
 
@@ -148,12 +152,16 @@ def transform_ct(inputdir, outdir):
         # Resize and crop
         img = resize_and_crop_center(img, 512, 512)
 
+        # Save image as 3 channel RGB
+        img = ImageOps.grayscale(img)
+        img = img.convert('RGB')
+
         # Save the image
         img.save(os.path.join(outdir, f"im{i}.png"))
 
 
-inputdir = '/home/jabbar/results_project_tomo/data/Scapis'
-# inputdir = './data/training'
+# inputdir = '/home/jabbar/results_project_tomo/data/Scapis'
+inputdir = './data/training'
 
 dir_i = 0
 for filename in os.listdir(inputdir):
