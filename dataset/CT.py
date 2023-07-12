@@ -47,11 +47,14 @@ class CTDataset(Dataset):
 
         imgpaths_train = [imgpath_train + f'/im{i}.png' for i in range(0, 53)]
         # Only generate paths for existing ground truth images
-        imgpaths_gt = [imgpath_gt + f'/im{i*10}.png' for i in range(0, 52)]
+        imgpaths_gt = [imgpath_gt + f'/im{i}.png' for i in range(0, 512)]
 
-        print("GetItem: Index: ", index)
-        print(imgpaths_train)
-        print(imgpath_gt)
+        # take two random frames in sequence from the training set
+        idx = np.random.randint(0, len(imgpaths_train)-1)
+        imgpaths_train = imgpaths_train[idx:idx+2]
+
+        # take the corresponding ground truth frames which are the 10 frames after the first frame
+        imgpaths_gt = imgpaths_gt[idx:idx+10]
 
         # Load images
         images_train = [Image.open(pth) for pth in imgpaths_train]
