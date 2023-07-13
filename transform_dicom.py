@@ -181,7 +181,14 @@ for filename in os.listdir(inputdir):
         print(os.path.join(inputdir, filename), len(os.listdir(tomo_inputdir)))
         if len(os.listdir(tomo_inputdir)) == 65:
             print("use")
-            transform_ct(ct_inputdir, outputdir_ct)
-            transform_tomosynthesis(tomo_inputdir, outputdir_tomo)
-            dir_i += 1
+            try:
+                transform_ct(ct_inputdir, outputdir_ct)
+                transform_tomosynthesis(tomo_inputdir, outputdir_tomo)
+            except:
+                print("error")
+                # remove the output directory
+                os.rmdir(outputdir_ct)
+                os.rmdir(outputdir_tomo)
+            else:
+                dir_i += 1
 
