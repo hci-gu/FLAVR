@@ -63,6 +63,7 @@ def resize_and_crop_center(img, new_width=512, new_height=512):
 
 
 def transform_tomosynthesis(inputdir, outdir):
+    print(inputdir)
     # Create output directory if it doesn't exist
     if not os.path.exists(outdir):
         os.makedirs(outdir)
@@ -70,7 +71,10 @@ def transform_tomosynthesis(inputdir, outdir):
 
     # loop through all the DICOM files
     i = 0
-    for filename in os.listdir(inputdir):
+    filenames = os.listdir(inputdir)
+    sorted_filenames = sorted(filenames, key=lambda x: int(x.split("Image ")[1].split()[0]))
+    for filename in sorted_filenames:
+        print(filename)
         if filename.endswith(".dcm"):
             ds = pydicom.read_file(os.path.join(inputdir, filename), force=True)
             # # windowed = apply_voi_lut(ds.pixel_array, ds)
@@ -122,7 +126,10 @@ def transform_ct(inputdir, outdir):
     ArrayDicom = np.zeros(ConstPixelDims, dtype=RefDs.pixel_array.dtype)
 
     # loop through all the DICOM files
-    for filename in os.listdir(inputdir):
+    filenames = os.listdir(inputdir)
+    sorted_filenames = sorted(filenames, key=lambda x: int(x.split("Image ")[1].split()[0]))
+    for filename in sorted_filenames:
+        print(filename)
         if filename.endswith(".dcm"):
             # read the file
             ds = pydicom.read_file(os.path.join(inputdir, filename), force=True)
@@ -179,11 +186,11 @@ for filename in os.listdir(inputdir):
         tomo_inputdir = os.path.join(inputdir, filename + '/DX/Tomosynthesis')
         ct_inputdir = os.path.join(inputdir, filename + '/CT/Thorax insp')
         print(os.path.join(inputdir, filename), len(os.listdir(tomo_inputdir)))
-        if len(os.listdir(tomo_inputdir)) == 65:
+        if len(os.listdir(tomo_inputdir)) == 65 and len(os.listdir(ct_inputdir)) > 503:
             print("use")
             try:
                 transform_ct(ct_inputdir, outputdir_ct)
-                transform_tomosynthesis(tomo_inputdir, outputdir_tomo)
+                # transform_tomosynthesis(tomo_inputdir, outputdir_tomo)
             except:
                 print("error")
             else:

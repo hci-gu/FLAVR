@@ -22,28 +22,15 @@ class CTDataset(Dataset):
         self.trainlist = os.listdir(os.path.join(data_root, "TOMO"))
         self.testlist = os.listdir(os.path.join(data_root, "CT"))
 
-        if self.training:
-            self.transforms = transforms.Compose([
-                # transforms.RandomHorizontalFlip(0.5),
-                # transforms.RandomVerticalFlip(0.5),
-                transforms.ToTensor()
-            ])
-        else:
-            self.transforms = transforms.Compose([
-                transforms.ToTensor()
-            ])
+        self.transforms = transforms.Compose([
+            transforms.ToTensor()
+        ])
 
     def __getitem__(self, index):
-        if self.training:
-            imgpath_train = os.path.join(
-                self.data_root, "TOMO", self.trainlist[index])
-            imgpath_gt = os.path.join(
-                self.data_root, "CT", self.trainlist[index])
-        else:
-            imgpath_train = os.path.join(
-                self.data_root, "TOMO", self.trainlist[index])
-            imgpath_gt = os.path.join(
-                self.data_root, "CT", self.trainlist[index])
+        imgpath_train = os.path.join(
+            self.data_root, "TOMO", self.trainlist[index])
+        imgpath_gt = os.path.join(
+            self.data_root, "CT", self.trainlist[index])
 
         imgpaths_train = [imgpath_train + f'/im{i}.png' for i in range(0, 63)]
         # Only generate paths for existing ground truth images
@@ -67,22 +54,12 @@ class CTDataset(Dataset):
         images_gt = [Image.open(pth) for pth in imgpaths_gt]
 
         # Data augmentation
+        images_train = [self.transforms(img_) for img_ in images_train]
+        images_gt = [self.transforms(img_) for img_ in images_gt]
         if self.training:
-            seed = random.randint(0, 2**32)
-            random.seed(seed)
-            images_train = [self.transforms(img_) for img_ in images_train]
-            random.seed(seed)
-            images_gt = [self.transforms(img_) for img_ in images_gt]
-
-            # Random Temporal Flip
             if random.random() >= 0.5:
                 images_train = images_train[::-1]
                 images_gt = images_gt[::-1]
-
-        else:
-            # Apply transforms for testing
-            images_train = [self.transforms(img_) for img_ in images_train]
-            images_gt = [self.transforms(img_) for img_ in images_gt]
 
         return images_train, images_gt
 
