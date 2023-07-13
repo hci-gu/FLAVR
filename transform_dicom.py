@@ -72,7 +72,7 @@ def transform_tomosynthesis(inputdir, outdir):
     i = 0
     for filename in os.listdir(inputdir):
         if filename.endswith(".dcm"):
-            ds = pydicom.read_file(os.path.join(inputdir, filename))
+            ds = pydicom.read_file(os.path.join(inputdir, filename), force=True)
             # # windowed = apply_voi_lut(ds.pixel_array, ds)
 
             # Convert to float to avoid overflow or underflow losses.
@@ -108,7 +108,7 @@ def transform_ct(inputdir, outdir):
     slices = []
 
     # Get ref file
-    RefDs = pydicom.dcmread(os.path.join(inputdir, os.listdir(inputdir)[0]))
+    RefDs = pydicom.dcmread(os.path.join(inputdir, os.listdir(inputdir)[0]), force=True)
 
     # Load dimensions based on the number of rows, columns, and slices
     ConstPixelDims = (int(RefDs.Rows), int(
