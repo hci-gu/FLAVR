@@ -175,8 +175,11 @@ for filename in os.listdir(inputdir):
             './data/compiled', 'TOMO/' + str(dir_i).zfill(4))
         # Call the function to transform the CT scans
         print(os.path.join(inputdir, filename + '/CT/Thorax insp'))
-        transform_ct(os.path.join(inputdir, filename +
-                     '/CT/Thorax insp'), outputdir_ct)
-        transform_tomosynthesis(os.path.join(inputdir, filename +
-                                             '/DX/Tomosynthesis'), outputdir_tomo)
-        dir_i += 1
+
+        # check how many files are in the tomosynthesis folder
+        tomo_inputdir = os.path.join(inputdir, filename + '/DX/Tomosynthesis')
+        ct_inputdir = os.path.join(inputdir, filename + '/CT/Thorax insp')
+        if len(tomo_inputdir) == 65:
+            transform_ct(ct_inputdir, outputdir_ct)
+            transform_tomosynthesis(tomo_inputdir, outputdir_tomo)
+            dir_i += 1
