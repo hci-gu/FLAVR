@@ -21,7 +21,7 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument("--input_video" , type=str , required=True , help="Path/WebURL to input video")
 parser.add_argument("--youtube-dl" , type=str , help="Path to youtube_dl" , default=".local/bin/youtube-dl")
-parser.add_argument("--factor" , type=int , required=True , choices=[2,4,8] , help="How much interpolation needed. 2x/4x/8x.")
+parser.add_argument("--factor" , type=int , required=True, help="How much interpolation needed. 2x/4x/8x.")
 parser.add_argument("--codec" , type=str , help="video codec" , default="mpeg4")
 parser.add_argument("--load_model" , required=True , type=str , help="path for stored model")
 parser.add_argument("--up_mode" , type=str , help="Upsample Mode" , default="transpose")
@@ -99,6 +99,8 @@ def make_image(img):
 def files_to_videoTensor(path , downscale=1.):
     from PIL import Image
     files = sorted(os.listdir(path))
+    # filenames are like imX.png where X is the frame number, its not padded so we need to sort accordingly
+    files = sorted(files, key=lambda x: int(x.split("im")[1].split(".")[0]))
     print(len(files))
     images = [torch.Tensor(np.asarray(Image.open(os.path.join(input_video , f)))).type(torch.uint8) for f in files]
     print(images[0].shape)
