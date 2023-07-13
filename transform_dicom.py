@@ -186,9 +186,6 @@ for filename in os.listdir(inputdir):
                 transform_tomosynthesis(tomo_inputdir, outputdir_tomo)
             except:
                 print("error")
-                # remove the output directory
-                os.rmdir(outputdir_ct)
-                os.rmdir(outputdir_tomo)
             else:
                 dir_i += 1
 
