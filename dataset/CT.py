@@ -56,9 +56,9 @@ class CTDataset(Dataset):
         # take the corresponding ground truth frames which are the 10 frames after the first frame
         imgpaths_gt = imgpaths_gt[idx:idx+10]
 
-        print("GetItem:")
-        print(imgpaths_train)
-        print(imgpaths_gt)
+        # take third and sixth frame from ground truth frames and add to the training set
+        imgpaths_train.append(imgpaths_gt[2])
+        imgpaths_train.append(imgpaths_gt[5])
 
         # Load images
         images_train = [Image.open(pth) for pth in imgpaths_train]
