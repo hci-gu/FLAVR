@@ -63,7 +63,6 @@ def resize_and_crop_center(img, new_width=512, new_height=512):
 
 
 def transform_tomosynthesis(inputdir, outdir):
-    print(inputdir)
     # Create output directory if it doesn't exist
     if not os.path.exists(outdir):
         os.makedirs(outdir)
@@ -74,7 +73,6 @@ def transform_tomosynthesis(inputdir, outdir):
     filenames = os.listdir(inputdir)
     sorted_filenames = sorted(filenames, key=lambda x: int(x.split("Image ")[1].split()[0]))
     for filename in sorted_filenames:
-        print(filename)
         if filename.endswith(".dcm"):
             ds = pydicom.read_file(os.path.join(inputdir, filename), force=True)
             # # windowed = apply_voi_lut(ds.pixel_array, ds)
@@ -129,7 +127,6 @@ def transform_ct(inputdir, outdir):
     filenames = os.listdir(inputdir)
     sorted_filenames = sorted(filenames, key=lambda x: int(x.split("Image ")[1].split()[0]))
     for filename in sorted_filenames:
-        print(filename)
         if filename.endswith(".dcm"):
             # read the file
             ds = pydicom.read_file(os.path.join(inputdir, filename), force=True)
