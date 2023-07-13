@@ -125,7 +125,7 @@ def transform_ct(inputdir, outdir):
     for filename in os.listdir(inputdir):
         if filename.endswith(".dcm"):
             # read the file
-            ds = pydicom.read_file(os.path.join(inputdir, filename))
+            ds = pydicom.read_file(os.path.join(inputdir, filename), force=True)
             # store the raw image data and the slice location
             lstFilesDCM.append(filename)
             ArrayDicom[:, :, lstFilesDCM.index(filename)] = ds.pixel_array
