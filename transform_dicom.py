@@ -178,8 +178,8 @@ for filename in os.listdir(inputdir):
         # check how many files are in the tomosynthesis folder
         tomo_inputdir = os.path.join(inputdir, filename + '/DX/Tomosynthesis')
         ct_inputdir = os.path.join(inputdir, filename + '/CT/Thorax insp')
-        print(os.path.join(inputdir, filename), len(tomo_inputdir))
-        if len(tomo_inputdir) == 65:
+        print(os.path.join(inputdir, filename), len(os.listdir(tomo_inputdir)))
+        if len(os.listdir(tomo_inputdir)) == 65:
             print("use")
             transform_ct(ct_inputdir, outputdir_ct)
             transform_tomosynthesis(tomo_inputdir, outputdir_tomo)
