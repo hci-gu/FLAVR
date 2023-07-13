@@ -160,8 +160,8 @@ def transform_ct(inputdir, outdir):
         img.save(os.path.join(outdir, f"im{i}.png"))
 
 
-# inputdir = '/home/jabbar/results_project_tomo/data/Scapis'
-inputdir = './data/training'
+inputdir = '/home/jabbar/results_project_tomo/data/Scapis'
+# inputdir = './data/training'
 
 dir_i = 0
 for filename in os.listdir(inputdir):
@@ -180,6 +180,8 @@ for filename in os.listdir(inputdir):
         tomo_inputdir = os.path.join(inputdir, filename + '/DX/Tomosynthesis')
         ct_inputdir = os.path.join(inputdir, filename + '/CT/Thorax insp')
         if len(tomo_inputdir) == 65:
+            print("use")
             transform_ct(ct_inputdir, outputdir_ct)
             transform_tomosynthesis(tomo_inputdir, outputdir_tomo)
             dir_i += 1
+
