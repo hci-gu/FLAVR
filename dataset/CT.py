@@ -45,7 +45,7 @@ class CTDataset(Dataset):
             imgpath_gt = os.path.join(
                 self.data_root, "CT", self.trainlist[index])
 
-        imgpaths_train = [imgpath_train + f'/im{i}.png' for i in range(0, 64)]
+        imgpaths_train = [imgpath_train + f'/im{i}.png' for i in range(0, 63)]
         # Only generate paths for existing ground truth images
         imgpaths_gt = [imgpath_gt + f'/im{i}.png' for i in range(0, 512)]
 
@@ -54,7 +54,8 @@ class CTDataset(Dataset):
         imgpaths_train = imgpaths_train[idx:idx+2]
 
         # take the corresponding ground truth frames which are the 10 frames after the first frame
-        imgpaths_gt = imgpaths_gt[idx*8:idx*8 +idx+8]
+        gt_idx = idx*8
+        imgpaths_gt = imgpaths_gt[gt_idx:gt_idx+8]
 
         # take third and sixth frame from ground truth frames and insert to training frames
         # [training frame 1, gt at index 3, gt at index 6, training frame 2]
@@ -106,9 +107,3 @@ if __name__ == "__main__":
     dataset = CTDataset("./data/compiled", is_training=True)
     dataloader = DataLoader(dataset, batch_size=100,
                             shuffle=False, num_workers=32, pin_memory=True)
-
-# loop 1 to 100
-#     for i in range(1, 101):
-
-index_thing = 10
-string_with_index = 'str %d' % index_thing
