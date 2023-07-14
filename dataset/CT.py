@@ -27,7 +27,7 @@ class CTDataset(Dataset):
 
     def __getitem__(self, index):
         imgpaths = os.path.join(
-            self.data_root, "CT", self.trainlist[index])
+            self.data_root, "CT", self.datalist[index])
         # sort by name "imgX.png" where X is the frame number
         imgpaths = sorted(imgpaths, key=lambda x: int(x.split("img")[1].split(".")[0]))
 
