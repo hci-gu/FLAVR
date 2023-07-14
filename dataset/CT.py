@@ -26,11 +26,18 @@ class CTDataset(Dataset):
         ])
 
     def __getitem__(self, index):
-        imgpaths = os.path.join(
-            self.data_root, "CT", self.datalist[index])
-        print(imgpaths)
+        data_path = os.path.join(
+            self.data_root, "CT", self.datalist[index]);
+        print(data_path)
+        files = os.listdir(data_path)
+        print(files)
+        
         # sort by name "imgX.png" where X is the frame number
-        imgpaths = sorted(imgpaths, key=lambda x: int(x.split("im")[1].split(".")[0]))
+        files = sorted(files, key=lambda x: int(x.split("im")[1].split(".")[0]))
+        print(files)
+        
+        # get the full path of each image
+        imgpaths = [os.path.join(data_path, f) for f in files]
         print(imgpaths)
 
         # take a random index from 0 to length - 8
