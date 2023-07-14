@@ -1,36 +1,3 @@
-# from pydicom import dcmread
-# import png
-# import numpy as np
-# from pydicom.pixel_data_handlers.util import apply_voi_lut
-
-# #file = './data/PseudoID0001/DX/Tomosynthesis/PseudoID0001 Image 001 Slice location 20,00.dcm'
-# file = './data/PseudoID0001/CT/Thorax insp/PseudoID0001 Image 001 Slice location -752,50.dcm'
-
-# ds = dcmread(file)
-# if 'WindowWidth' in ds:
-#     print('Dataset has windowing')
-
-# # windowed = apply_voi_lut(ds.pixel_array, ds)
-
-# shape = ds.pixel_array.shape
-
-# # Convert to float to avoid overflow or underflow losses.
-# image_2d = ds.pixel_array.astype(float)
-
-# # Rescaling grey scale between 0-255
-# image_2d_scaled = (np.maximum(image_2d, 0) / image_2d.max()) * 255.0
-
-# # Convert to uint
-# image_2d_scaled = np.uint8(image_2d_scaled)
-
-# # Write the PNG file
-# with open('output.png', 'wb') as png_file:
-#     w = png.Writer(shape[1], shape[0], greyscale=True)
-#     w.write(png_file, image_2d_scaled)
-
-
-# # Add code for rescaling to 8-bit...
-
 import os
 import pydicom
 import numpy as np
@@ -95,7 +62,7 @@ def transform_tomosynthesis(inputdir, outdir):
 
             # Save image as 3 channel RGB
             img = ImageOps.grayscale(img)
-            # img = img.convert('RGB')
+            img = img.convert('RGB')
 
             img.save(os.path.join(outdir, f"im{i}.png"))
             i += 1
@@ -158,7 +125,7 @@ def transform_ct(inputdir, outdir):
 
         # Save image as 3 channel RGB
         img = ImageOps.grayscale(img)
-        # img = img.convert('RGB')
+        img = img.convert('RGB')
 
         # Save the image
         img.save(os.path.join(outdir, f"im{i}.png"))
@@ -174,9 +141,9 @@ for filename in os.listdir(inputdir):
         # Create the output directory
 
         outputdir_ct = os.path.join(
-            './data/compiled_grayscale', 'CT/' + str(dir_i).zfill(4))
+            './data/compiled', 'CT/' + str(dir_i).zfill(4))
         outputdir_tomo = os.path.join(
-            './data/compiled_grayscale', 'TOMO/' + str(dir_i).zfill(4))
+            './data/compiled', 'TOMO/' + str(dir_i).zfill(4))
         # Call the function to transform the CT scans
 
         # check how many files are in the tomosynthesis folder

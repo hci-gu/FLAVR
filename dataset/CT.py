@@ -6,7 +6,6 @@ from torchvision import transforms
 from PIL import Image
 import random
 
-
 class CTDataset(Dataset):
     def __init__(self, data_root, is_training):
         """
@@ -19,35 +18,32 @@ class CTDataset(Dataset):
         self.data_root = data_root
         self.training = is_training
 
-        self.trainlist = os.listdir(os.path.join(data_root, "TOMO"))
-        self.testlist = os.listdir(os.path.join(data_root, "CT"))
+        # self.trainlist = os.listdir(os.path.join(data_root, "TOMO"))
+        self.datalist = os.listdir(os.path.join(data_root, "CT"))
 
         self.transforms = transforms.Compose([
             transforms.ToTensor()
         ])
 
     def __getitem__(self, index):
-        imgpath_train = os.path.join(
-            self.data_root, "TOMO", self.trainlist[index])
-        imgpath_gt = os.path.join(
+        imgpaths = os.path.join(
             self.data_root, "CT", self.trainlist[index])
+        # sort by name "imgX.png" where X is the frame number
+        imgpaths = sorted(imgpaths, key=lambda x: int(x.split("img")[1].split(".")[0]))
 
-        imgpaths_train = [imgpath_train + f'/im{i}.png' for i in range(0, 63)]
-        # Only generate paths for existing ground truth images
-        imgpaths_gt = [imgpath_gt + f'/im{i}.png' for i in range(0, 512)]
+        # take a random index from 0 to length - 8
+        idx = np.random.randint(0, len(imgpaths)-8)
 
-        # take two random frames in sequence from the training set
-        idx = np.random.randint(0, len(imgpaths_train)-1)
-        imgpaths_train = imgpaths_train[idx:idx+2]
+        # take out frame at idx and idx + 8
+        imgpaths_train = [
+            imgpaths[idx], 
+            imgpaths[idx+3],
+            imgpaths[idx+6],
+            imgpaths[idx+8]
+        ]
 
-        # take the corresponding ground truth frames which are the 10 frames after the first frame
-        gt_idx = idx*8
-        imgpaths_gt = imgpaths_gt[gt_idx:gt_idx+8]
-
-        # take third and sixth frame from ground truth frames and insert to training frames
-        # [training frame 1, gt at index 3, gt at index 6, training frame 2]
-        imgpaths_train.insert(1, imgpaths_gt[3])
-        imgpaths_train.insert(2, imgpaths_gt[5])
+        # imgpaths_gt should contains all frames between idx and idx + 8
+        imgpaths_gt = imgpaths[idx:idx+8]
 
         # Load images
         images_train = [Image.open(pth) for pth in imgpaths_train]
