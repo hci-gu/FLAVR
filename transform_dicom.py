@@ -95,7 +95,7 @@ def transform_tomosynthesis(inputdir, outdir):
 
             # Save image as 3 channel RGB
             img = ImageOps.grayscale(img)
-            img = img.convert('RGB')
+            # img = img.convert('RGB')
 
             img.save(os.path.join(outdir, f"im{i}.png"))
             i += 1
@@ -158,7 +158,7 @@ def transform_ct(inputdir, outdir):
 
         # Save image as 3 channel RGB
         img = ImageOps.grayscale(img)
-        img = img.convert('RGB')
+        # img = img.convert('RGB')
 
         # Save the image
         img.save(os.path.join(outdir, f"im{i}.png"))
@@ -174,9 +174,9 @@ for filename in os.listdir(inputdir):
         # Create the output directory
 
         outputdir_ct = os.path.join(
-            './data/compiled', 'CT/' + str(dir_i).zfill(4))
+            './data/compiled_grayscale', 'CT/' + str(dir_i).zfill(4))
         outputdir_tomo = os.path.join(
-            './data/compiled', 'TOMO/' + str(dir_i).zfill(4))
+            './data/compiled_grayscale', 'TOMO/' + str(dir_i).zfill(4))
         # Call the function to transform the CT scans
 
         # check how many files are in the tomosynthesis folder
@@ -187,7 +187,7 @@ for filename in os.listdir(inputdir):
             print("use")
             try:
                 transform_ct(ct_inputdir, outputdir_ct)
-                # transform_tomosynthesis(tomo_inputdir, outputdir_tomo)
+                transform_tomosynthesis(tomo_inputdir, outputdir_tomo)
             except:
                 print("error")
             else:
