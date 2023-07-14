@@ -29,7 +29,7 @@ class CTDataset(Dataset):
         imgpaths = os.path.join(
             self.data_root, "CT", self.datalist[index])
         # sort by name "imgX.png" where X is the frame number
-        imgpaths = sorted(imgpaths, key=lambda x: int(x.split("img")[1].split(".")[0]))
+        imgpaths = sorted(imgpaths, key=lambda x: int(x.split("im")[1].split(".")[0]))
 
         # take a random index from 0 to length - 8
         idx = np.random.randint(0, len(imgpaths)-8)
