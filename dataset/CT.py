@@ -60,10 +60,7 @@ class CTDataset(Dataset):
         return images_train, images_gt
 
     def __len__(self):
-        if self.training:
-            return len(self.trainlist)
-        else:
-            return len(self.testlist)
+        return len(self.datalist)
 
 
 def get_loader(mode, data_root, batch_size, shuffle, num_workers, test_mode=None):
