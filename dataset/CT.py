@@ -37,8 +37,7 @@ class CTDataset(Dataset):
         imgpaths = [os.path.join(data_path, f) for f in files]
 
         # take a random index from 0 to length - 8
-        idx = np.random.randint(0, len(imgpaths)-8)
-        print(idx)
+        idx = np.random.randint(0, len(imgpaths)-9)
 
         # take out frame at idx and idx + 8
         imgpaths_train = [
@@ -47,11 +46,9 @@ class CTDataset(Dataset):
             imgpaths[idx+6],
             imgpaths[idx+8]
         ]
-        print(imgpaths_train)
 
         # imgpaths_gt should contains all frames between idx and idx + 8
         imgpaths_gt = imgpaths[idx:idx+8]
-        print(imgpaths_gt)
 
         # Load images
         images_train = [Image.open(pth) for pth in imgpaths_train]
